@@ -7,5 +7,6 @@ The following python packages are required to run the experiments:
  - networkx
  - matplotlib
  - python-louvain
+ - sklearn
 
 They can all be installed using pip: `pip install <package-name>`
