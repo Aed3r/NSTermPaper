@@ -6,6 +6,8 @@ example1 = normalized_mutual_info_score([0, 0, 1, 1], [0, 0, 1, 1])
 example2 = normalized_mutual_info_score([0, 0, 1, 1], [1, 1, 0, 0])
 example3 = normalized_mutual_info_score([1, 1, 0, 0], [1, 2, 3, 4])
 
+# takes a dictionary and returns their values in a deterministic order
+# determined by sorting the keys
 def preprocess_partitions(partition):
     # convert the partition to a list and sort by key
     sorted_partition = list(partition.items())
@@ -15,6 +17,9 @@ def preprocess_partitions(partition):
 
     return communities
 
+# takes two dictionaries, where the nodes are keys
+# and the values are the label of the partition they belong to,
+# and returns their normalized mutual information, 0 < NMI < 1
 def compare_communities(partition1, partition2):
     communities1 = preprocess_partitions(partition1)
     communities2 = preprocess_partitions(partition2)
