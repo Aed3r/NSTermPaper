@@ -1,4 +1,2 @@
 .vscode/settings.json
-LFR_250.txt
-LFR_5000000.txt
-LFR_2500000.txt
+LFR_*.txt
