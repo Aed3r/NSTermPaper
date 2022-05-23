@@ -55,12 +55,6 @@ try:
 except:
     print("Average shortest path length:", "N/A")
 
-# Output the average path length of the graph
-try:
-    print("Average path length:", nx.average_shortest_path_length(G))
-except:
-    print("Average path length:", "N/A")
-
 if DRAW_GRAPH:
     # draw the graph
     pos = nx.spring_layout(G)
