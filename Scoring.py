@@ -6,6 +6,38 @@ example1 = normalized_mutual_info_score([0, 0, 1, 1], [0, 0, 1, 1])
 example2 = normalized_mutual_info_score([0, 0, 1, 1], [1, 1, 0, 0])
 example3 = normalized_mutual_info_score([1, 1, 0, 0], [1, 2, 3, 4])
 
+
+def parse_partition(path):
+    items = []
+    community = 0
+    f = open(path, 'r')
+
+    for line in f:
+        ints = line.split()
+        for int in ints:
+            node = int(int)
+            items.append((node, community))
+        community += 1
+    # if a node is in multiple communities, dict() will only register the last community.
+    partition = dict(items)
+    return partition
+
+# takes a file path of a file containing
+# pairs of a node label and which partition it belongs to
+# and returns a dictionary storing the partition
+def read_partition(path):
+    items = []
+    f = open(path, 'r')
+    for line in f:
+        ints = line.split()
+        node   = int(ints[0])
+        community = int(ints[1])
+        items.append((node, community))
+
+    partition = dict(items)
+
+    return partition
+
 # takes a dictionary and returns their values in a deterministic order
 # determined by sorting the keys
 def preprocess_partitions(partition):
@@ -45,5 +77,5 @@ examplePartition2 = { 0 : 0
                     , 7 : 2
                     }
 
-score = compare_communities(examplePartition1, examplePartition2)
-print(score)
+partition = read_partition("./Graphs/EU-email/email-Eu-core-department-labels.txt")
+print(partition)

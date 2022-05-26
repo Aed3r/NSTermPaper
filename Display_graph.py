@@ -1,7 +1,10 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-G = nx.read_edgelist("LFR.txt")
+path = "./Graphs/EU-email/email-Eu-core.txt"
 
-nx.draw(G)
+#G1 = nx.read_edgelist("LFR.txt")
+G2 = nx.read_edgelist(path)
+
+nx.draw(G2)
 plt.show()
