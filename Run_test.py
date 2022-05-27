@@ -1,5 +1,5 @@
 import Community.community as louvain
-import Community.modularity
+#import Community.modularity
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -8,13 +8,14 @@ from time import sleep
 
 PRINT_INFO = True
 DRAW_GRAPH = False
-FILE = "LFR_10000.txt"
+FILE = "LFR_250.txt"
+MEASURE = "MODULARITY" # "MODULARITY" / "MAPEQUATION" / ""
 
-G = nx.read_edgelist(FILE) # Load a saved graph
+G = nx.read_edgelist(FILE) # Load the saved graph
 
 # compute the best partition
 start = time.time()
-partition = louvain.best_partition(G)
+partition = louvain.best_partition(G, MEASURE)
 end = time.time()
 
 if not PRINT_INFO:

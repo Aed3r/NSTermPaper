@@ -161,6 +161,7 @@ def modularity(partition, graph, weight='weight'):
 
 
 def best_partition(graph,
+                   measure,
                    partition=None,
                    weight='weight',
                    resolution=1.,
@@ -247,6 +248,7 @@ def best_partition(graph,
     >>> plt.show()
     """
     dendo = generate_dendrogram(graph,
+                                measure,
                                 partition,
                                 weight,
                                 resolution,
@@ -256,6 +258,7 @@ def best_partition(graph,
 
 
 def generate_dendrogram(graph,
+                        measureTool,
                         part_init=None,
                         weight='weight',
                         resolution=1.,
@@ -350,23 +353,27 @@ def generate_dendrogram(graph,
     status.init(current_graph, weight, part_init)
     status_list = list()
     __one_level(current_graph, status, weight, resolution, random_state)
-    #new_mod = __modularity(status, resolution)
+    measure = None
+    if measureTool == "MODULARITY":
+        measure = __modularity(status, resolution)
+    elif measureTool == "PARTITION_SIZE":
+        measure = __modularity(status, resolution)
     partition = __renumber(status.node2com)
-    new_mod = modularity(partition, current_graph)
+    #measure = modularity(partition, graph)
     status_list.append(partition)
-    mod = new_mod
+    mod = measure
     current_graph = induced_graph(partition, current_graph, weight)
     status.init(current_graph, weight)
 
     while True:
         __one_level(current_graph, status, weight, resolution, random_state)
-        #new_mod = __modularity(status, resolution)
-        new_mod = modularity(partition, current_graph)
-        if new_mod - mod < __MIN:
+        measure = __modularity(status, resolution)
+        #measure = modularity(partition, graph)
+        if measure - mod < __MIN:
             break
         partition = __renumber(status.node2com)
         status_list.append(partition)
-        mod = new_mod
+        mod = measure
         current_graph = induced_graph(partition, current_graph, weight)
         status.init(current_graph, weight)
     return status_list[:]
