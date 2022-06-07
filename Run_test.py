@@ -29,6 +29,11 @@ if MEASURE == "MODULARITY" or MEASURE == "ALL":
     # Running time
     print("Modularity running time:", round(end - start, 2), "s")
 
+    # Write results to file
+    with open(FILE + "_mod_results.txt", "a") as f:
+        for node, com in partition.items():
+            f.write(str(node) + " " + str(com) + "\n")
+
 if MEASURE == "MAPEQUATION" or MEASURE == "ALL":
     start = time.time()
     
@@ -40,6 +45,21 @@ if MEASURE == "MAPEQUATION" or MEASURE == "ALL":
     end = time.time()
     # Running time
     print("MAPEQUATION running time:", round(end - start, 2), "s")
+
+    PRINT_INFO = False
+    print(f"Found {im.num_top_modules} modules with codelength: {im.codelength}")
+
+    print("Result")
+    print("\n#node module")
+    for node in im.tree:
+        if node.is_leaf:
+            print(node.node_id, node.module_id)
+
+    # Write results to file
+    with open(FILE + "_map_results.txt", "a") as f:
+        for node in im.tree:
+            if node.is_leaf:
+                f.write(str(node.node_id) + " " + str(node.module_id) + "\n")
 
 if PRINT_INFO:
     # Output number of edges

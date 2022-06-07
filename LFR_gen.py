@@ -19,7 +19,7 @@ seed = 10 # Random seed
 start = time.time()
 
 # Generate the graph
-G = nx.LFR_benchmark_graph(n, tau1, tau2, mu, average_degree, min_degree, 
+G = nx.LFR_benchmark_graph(n, tau1, tau2, mu, average_degree, min_degree,
                         max_degree, min_community, max_community, 
                         tol, max_iters, seed)
 
