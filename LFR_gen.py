@@ -1,15 +1,14 @@
-from networkx.generators.community import LFR_benchmark_graph
 import networkx as nx
 import time
 
-n = 1000 # number of nodes
+n = 500 # number of nodes
 tau1 = 3 # Power law exponent for degree distribution (>1)
 tau2 = 1.5 # Power law exponent for community size distribution (>1)
 mu = 0.1 # Fraction of edges to other communities ([0,1])
 average_degree = 5 # Average degree of nodes in the network ([0,n])
 min_degree = None # Minimum degree of nodes in the network ([0,n])
 max_degree = None # Maximum degree of nodes in the network
-min_community = 5 # Minimum size of communities
+min_community = 20 # Minimum size of communities
 max_community = 500 # Maximum size of communities
 tol = 1e-07 # Tolerance when comparing floats
 max_iters = 1000 # Maximum number of iterations for the random graph generator
@@ -19,7 +18,7 @@ seed = 10 # Random seed
 start = time.time()
 
 # Generate the graph
-G = LFR_benchmark_graph(n, tau1, tau2, mu, average_degree, min_degree, 
+G = nx.LFR_benchmark_graph(n, tau1, tau2, mu, average_degree, min_degree, 
                         max_degree, min_community, max_community, 
                         tol, max_iters, seed)
 
@@ -36,3 +35,4 @@ print("Number of communities:", len(communities))
 
 # Export graph to .txt file
 nx.write_edgelist(G, "LFR_" + str(n) + ".txt")
+
