@@ -68,6 +68,13 @@ with open(path + name + "params.txt", "w") as file:
 nx.write_edgelist(G, path + "LFR_" + str(n) + ".txt", data = False)
 
 # Write the community labels to a file
-with open(path + name + "cmty.txt", "w") as file:
+with open(path + name + "labels.txt", "w") as file:
     for v in community_labels:
         file.write(str(v[0]) + " " + str(v[1]) + "\n")
+
+# Write the communities to each line
+with open(path + name + "cmty.txt", "w") as file:
+    for community in communities:
+        for node in community:
+            file.write(str(node) + " ")
+        file.write("\n")

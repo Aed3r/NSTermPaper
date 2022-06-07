@@ -6,7 +6,9 @@ example1 = normalized_mutual_info_score([0, 0, 1, 1], [0, 0, 1, 1])
 example2 = normalized_mutual_info_score([0, 0, 1, 1], [1, 1, 0, 0])
 example3 = normalized_mutual_info_score([1, 1, 0, 0], [1, 2, 3, 4])
 
-
+# Takes a file path of a file containing
+# lines with all the nodes in the same community
+# and returns a dictionary storing the partition
 def parse_partition(path):
     items = []
     community = 0
@@ -14,15 +16,15 @@ def parse_partition(path):
 
     for line in f:
         ints = line.split()
-        for int in ints:
-            node = int(int)
+        for i in ints:
+            node = int(i)
             items.append((node, community))
         community += 1
     # if a node is in multiple communities, dict() will only register the last community.
     partition = dict(items)
     return partition
 
-# takes a file path of a file containing
+# Takes a file path of a file containing
 # pairs of a node label and which partition it belongs to
 # and returns a dictionary storing the partition
 def read_partition(path):
@@ -77,5 +79,8 @@ examplePartition2 = { 0 : 0
                     , 7 : 2
                     }
 
-partition = read_partition("./Graphs/EU-email/email-Eu-core-department-labels.txt")
-print(partition)
+name = "LFR_50000"
+path = "./Graphs/Generated/" + name + "/"
+partition = parse_partition(path + name + "cmty.txt")
+
+print(compare_communities(partition, partition))
