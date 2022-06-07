@@ -1,3 +1,4 @@
+import os
 import networkx as nx
 import time
 
@@ -36,3 +37,5 @@ print("Number of communities:", len(communities))
 # Export graph to .txt file
 nx.write_edgelist(G, "LFR_" + str(n) + ".txt")
 
+# Automatically run tests
+os.system("python3 Run_test.py LFR_" + str(n) + ".txt")
