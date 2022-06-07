@@ -40,18 +40,10 @@ class Louvain(Communities):
   def __init__(self, *args, **kwargs):
     super(Louvain, self).__init__(*args, **kwargs)
 
-  def do_measure(self, measure):
-    if measure == 'modularity':
-      # Modularity measure
-      return self.modularity()
-    elif measure == 'mapequation':
-      # Map equation measure
-      return np.abs(self.LM())
-
-  def louvain(self, measure):
+  def louvain(self):
     from random import shuffle
     # Compute the  MapEquation for all communities
-    self._ComMeas = self.do_measure(measure)
+    self._LM = np.abs(self.LM())
     # For all communities
     community_id = list(self.keys())
     shuffle(community_id)
@@ -69,18 +61,18 @@ class Louvain(Communities):
               comTo = self._G.node[neighbor]['community_id']
               comFrom = self._G.node[node]['community_id']
               node_moved = self.moveToCommunity(comFrom, comTo)
-              new_ComMeas = self.do_measure(measure)
-              if new_ComMeas < self._ComMeas:
-                config[new_ComMeas] = (comFrom,comTo)
+              new_LM = np.abs(self.LM())
+              if new_LM < self._LM:
+                config[new_LM] = (comFrom,comTo)
               # move the node back into their original community
               self.moveNodeToCommunity(node_moved, comFrom)
           if len(config.keys()):
             min_val = min(config.keys())
             (comFrom, comTo) = config[min_val]
             self.moveToCommunity(comFrom, comTo)
-            self._ComMeas = self.do_measure(measure)
+            self._LM = np.abs(self.LM())
 
-    #self._ComMeas = self.LM()
+    #self._LM = self.LM()
 
     # Debug
     if self._DEBUG:
@@ -92,9 +84,9 @@ class Louvain(Communities):
       for k, v in self.iteritems():
         print("{}\t\t{}".format(k,v))
       print('---------------------------')
-      print('LM :', self._ComMeas)
+      print('LM :', self._LM)
       print("### End ###")
-    return self._ComMeas
+    return self._LM
 
   def moveToCommunity(self, communityFrom, communityTo):
     node_moved = []
@@ -108,11 +100,11 @@ class Louvain(Communities):
     for node in node_set:
       self._G.node[node]['community_id'] = communityTo
 
-  def run_louvain(self, measure):
+  def run_louvain(self):
     LM = float('inf')
     stop = True
     while stop:
-      LM_new = self.louvain(measure)
+      LM_new = self.louvain()
       if LM_new < LM:
         LM = LM_new
       else:
@@ -120,7 +112,7 @@ class Louvain(Communities):
     return LM
 
   def print_map(self):
-    print('# codelength: {}'.format(self._ComMeas))
+    print('# codelength: {}'.format(self._LM))
     print('* Modules')
     for k,v in self.iteritems():
       (community_id, p_exit, p_i) = self.exit_probability(k,v)

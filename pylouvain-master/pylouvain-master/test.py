@@ -3,6 +3,7 @@
 import math
 import unittest
 from pylouvain import PyLouvain
+import networkx as nx
 
 class PylouvainTest(unittest.TestCase):
 

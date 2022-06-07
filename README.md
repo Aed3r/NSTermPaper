@@ -9,6 +9,7 @@ The following python packages are required to run the experiments:
  - psutil
  - memory_profiler
  - sklearn
+ - scipy
 
 They can all be installed using pip: `pip install <package-name>`
 
