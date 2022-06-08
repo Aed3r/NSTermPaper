@@ -10,18 +10,29 @@ example3 = normalized_mutual_info_score([1, 1, 0, 0], [1, 2, 3, 4])
 # lines with all the nodes in the same community
 # and returns a dictionary storing the partition
 def parse_partition(path):
-    items = []
-    community = 0
+    communities = []
+    # Read all the lines of the file, each line is a community
     f = open(path, 'r')
-
     for line in f:
         ints = line.split()
-        for i in ints:
-            node = int(i)
-            items.append((node, community))
-        community += 1
-    # if a node is in multiple communities, dict() will only register the last community.
-    partition = dict(items)
+        ints = list(map(int, ints))
+        communities.append(ints)
+    f.close()
+    communities.sort(key = len)
+
+
+    # Initialize a dictionary with a far greater number of nodes. This will be trimmed by compare_communities later.
+    max_num_of_nodes = sum([len(x) for x in communities])
+    partition = dict(zip(range(1,max_num_of_nodes), range(1,max_num_of_nodes)))
+
+
+    # Iterate through the list backwards to start with the largest communities and end with the smallest
+    # If a node is in multiple communities, it will only register the last (smallest) community.
+    # If a node is not in a community, it gets its own node id as community label
+    for i in range(len(communities)-1, -1, -1):
+        for node in communities[i]:
+            partition[node] = i + max_num_of_nodes
+
     return partition
 
 # Takes a file path of a file containing
@@ -54,9 +65,9 @@ def preprocess_partitions(partition):
 # takes two dictionaries, where the nodes are keys
 # and the values are the label of the partition they belong to,
 # and returns their normalized mutual information, 0 < NMI < 1
-def compare_communities(partition1, partition2):
-    communities1 = preprocess_partitions(partition1)
-    communities2 = preprocess_partitions(partition2)
+def compare_communities(ground_truth_partition, found_partition):
+    communities1 = preprocess_partitions(ground_truth_partition)
+    communities2 = preprocess_partitions(found_partition)[:len(communities1)]
     return normalized_mutual_info_score(communities1, communities2)
 
 examplePartition1 = { 0 : 0
@@ -78,9 +89,3 @@ examplePartition2 = { 0 : 0
                     , 6 : 2
                     , 7 : 2
                     }
-
-name = "LFR_50000"
-path = "./Graphs/Generated/" + name + "/"
-partition = parse_partition(path + name + "cmty.txt")
-
-print(compare_communities(partition, partition))
