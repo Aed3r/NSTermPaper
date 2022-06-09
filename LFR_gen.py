@@ -32,7 +32,7 @@ def generate_LFR(n):
                             tol, max_iters, seed)
 
     # Remove self loops
-    G.remove_edges_from(nx.selfloop_edges(G))
+    #G.remove_edges_from(nx.selfloop_edges(G))
 
     # End timer and display time
     end = time.time()
@@ -50,7 +50,7 @@ def generate_LFR(n):
     community_labels.sort() # might not be necessary but is nice for layout.
 
     # Export paramters and time
-    with open(path + name + "params.txt", "w") as file:
+    with open(os.path.join(path, name + "_params.txt"), "w") as file:
         file.write("n: " + str(n) + "\n")
         file.write("tau1: " + str(tau1) + "\n")
         file.write("tau2: " + str(tau2) + "\n")
@@ -84,7 +84,8 @@ def generate_LFR(n):
     # Automatically run tests
     os.system("python3 Run_test.py " + name)
 
-sizes = [250, 1000, 5000, 10000, 50000, 75000, 100000, 500000, 750000, 1000000, 2500000, 5000000]
+#sizes = [250, 1000, 5000, 10000, 50000, 75000, 100000, 500000, 750000, 1000000, 2500000, 5000000]
+sizes = [250]
 
 for n in sizes:
     print(n)
