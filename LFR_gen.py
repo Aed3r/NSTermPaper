@@ -7,6 +7,7 @@ import Parameters
 RUN_TESTS = False
 NUM_SAMPLES = 1
 SEED = 2
+SIZES = [250,1000,5000]
 
 def xorshift(seed):
     x = seed
@@ -86,10 +87,10 @@ def generate_LFR(i, n, name, params, seed):
 
     print()
 
-sizes = [250,1000,5000]
+
 
 for name, params in Parameters.params.items():
-    for size in sizes:
+    for size in SIZES:
         for i in range(NUM_SAMPLES):
             #sometimes it works, sometimes it does not. Seems very dependent of the seed.
             try:
