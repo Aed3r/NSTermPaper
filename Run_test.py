@@ -12,12 +12,15 @@ PRINT_INFO = False
 DRAW_GRAPH = False
 FILE = "LFR_250.txt"
 MEASURE = "ALL" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
+AUTOGRAPHPATH = os.path.join("Graphs", "LFR")
 
 if len(sys.argv) > 1:
     FILE = sys.argv[1]
     MEASURE = "ALL"
+    G = nx.read_edgelist(os.path.join(AUTOGRAPHPATH, FILE)) # Load the saved graph
+else:
+    G = nx.read_edgelist(FILE) # Load the saved graph
 
-G = nx.read_edgelist(FILE) # Load the saved graph
 
 SAVEPATH = os.path.join("Results", FILE + "_" + time.strftime("%d_%H-%M"))
 os.mkdir(SAVEPATH)

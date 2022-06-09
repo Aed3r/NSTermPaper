@@ -2,7 +2,7 @@ import os
 import networkx as nx
 import time
 
-n = 500 # number of nodes
+n = 200 # number of nodes
 tau1 = 3 # Power law exponent for degree distribution (>1)
 tau2 = 1.5 # Power law exponent for community size distribution (>1)
 mu = 0.1 # Fraction of edges to other communities ([0,1])
@@ -14,6 +14,7 @@ max_community = 500 # Maximum size of communities
 tol = 1e-07 # Tolerance when comparing floats
 max_iters = 1000 # Maximum number of iterations for the random graph generator
 seed = 10 # Random seed
+PATH = os.path.join("Graphs", "LFR")
 
 #Start timer
 start = time.time()
@@ -35,7 +36,9 @@ communities = {frozenset(G.nodes[v]["community"]) for v in G}
 print("Number of communities:", len(communities))
 
 # Export graph to .txt file
-nx.write_edgelist(G, "LFR_" + str(n) + ".txt")
+filename = "LFR_" + str(n) + ".txt"
+filepath = os.path.join(PATH, filename)
+nx.write_edgelist(G, filepath)
 
 # Automatically run tests
-os.system("python3 Run_test.py LFR_" + str(n) + ".txt")
+os.system("python3 Run_test.py " + filename)
