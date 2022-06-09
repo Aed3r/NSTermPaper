@@ -3,9 +3,11 @@ import networkx as nx
 import time
 import os
 
+RUN_TESTS = False
+NUM_SAMPLES = 2
 
-def generate_LFR(n):
-    # n = 50000 # number of nodes
+def generate_LFR(i):
+    n = 250 # number of nodes
     tau1 = 2.8 # Power law exponent for degree distribution (>1)
     tau2 = 1.8 # Power law exponent for community size distribution (>1)
     mu = 0.15 # Fraction of edges to other communities ([0,1])
@@ -19,7 +21,7 @@ def generate_LFR(n):
     seed = 2 # Random seed
 
     # Set the path and file name
-    name = "LFR_" + str(n)
+    name = "LFR_" + str(n) + "_" + str(i)
     path = os.path.join("Graphs", "LFR", name)
     os.makedirs(path, exist_ok = True)
 
@@ -82,11 +84,9 @@ def generate_LFR(n):
             file.write("\n")
 
     # Automatically run tests
-    os.system("python3 Run_test.py " + name)
+    if RUN_TESTS:
+        os.system("python Run_test.py " + name)
 
-#sizes = [250, 1000, 5000, 10000, 50000, 75000, 100000, 500000, 750000, 1000000, 2500000, 5000000]
-sizes = [250]
-
-for n in sizes:
-    print(n)
-    generate_LFR(n)
+for i in range(NUM_SAMPLES):
+    print(i+1)
+    generate_LFR(i+1)
