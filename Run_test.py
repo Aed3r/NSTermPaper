@@ -22,7 +22,7 @@ NUM_SAMPLES = 2
 if len(sys.argv) > 1:
     FILE = sys.argv[1]
     MEASURE = "ALL"
-    NUM_SAMPLES = int(sys.argv[2])
+    NUM_SAMPLES = 1
 
 for i in range(1, NUM_SAMPLES+1):
     LOCATION = os.path.join("Graphs", "LFR", FILE + "_" + str(i))

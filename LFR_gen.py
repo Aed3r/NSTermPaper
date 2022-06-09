@@ -7,18 +7,19 @@ import Parameters
 RUN_TESTS = False
 NUM_SAMPLES = 2
 
+def xorshift(seed):
+    x = seed
+    x ^= x << 13
+    x ^= x >> 17
+    x ^= x << 5
+    return x
+
+
 def generate_LFR(i, n, name, params):
-    tau1 = 2.8 # Power law exponent for degree distribution (>1)
-    tau2 = 1.8 # Power law exponent for community size distribution (>1)
-    mu = 0.15 # Fraction of edges to other communities ([0,1])
-    average_degree = 5 # Average degree of nodes in the network ([0,n])
-    min_degree = None # Minimum degree of nodes in the network ([0,n])
-    max_degree = None # Maximum degree of nodes in the network
-    min_community = 20 # Minimum size of communities
-    max_community = None # Maximum size of communities
-    tol = 1e-07 # Tolerance when comparing floats
-    max_iters = 500 # Maximum number of iterations for the random graph generator
-    seed = 2 # Random seed
+
+    if i > 1:
+        # Update seed
+        seed = xorshift(seed)
 
     # Set the path and file name
     name = "LFR_" + name + "_" + str(n) + "_" + str(i)
