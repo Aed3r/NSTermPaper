@@ -2,6 +2,7 @@ import os
 import networkx as nx
 import time
 import os
+import Parameters
 
 RUN_TESTS = False
 NUM_SAMPLES = 2
@@ -12,6 +13,7 @@ def xorshift(seed):
     x ^= x >> 17
     x ^= x << 5
     return x
+
 
 def generate_LFR(i):
     n = 250 # number of nodes
@@ -40,9 +42,7 @@ def generate_LFR(i):
     start = time.time()
 
     # Generate the graph
-    G = nx.LFR_benchmark_graph(n, tau1, tau2, mu, average_degree, min_degree,
-                            max_degree, min_community, max_community,
-                            tol, max_iters, seed)
+    G = nx.LFR_benchmark_graph(n, **params)
 
     # Remove self loops
     #G.remove_edges_from(nx.selfloop_edges(G))
@@ -96,7 +96,18 @@ def generate_LFR(i):
 
     # Automatically run tests
     if RUN_TESTS:
-        os.system("python Run_test.py " + name)
+        os.system("python3 Run_test.py " + name + "_" + str(i))
+
+#sizes = [250, 1000, 5000, 10000, 50000, 75000, 100000, 500000, 750000, 1000000, 2500000, 5000000]
+# sizes = [250]
+
+# for name, params in Parameters.params.items():
+#     for n in sizes:
+#         print(name, n)
+#         generate_LFR(name, params, n)
+
+#     if RUN_TESTS:
+#         os.system("python Run_test.py " + name)
 
 for i in range(1, NUM_SAMPLES+1):
     print(i)
