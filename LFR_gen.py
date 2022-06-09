@@ -6,6 +6,13 @@ import os
 RUN_TESTS = False
 NUM_SAMPLES = 2
 
+def xorshift(seed):
+    x = seed
+    x ^= x << 13
+    x ^= x >> 17
+    x ^= x << 5
+    return x
+
 def generate_LFR(i):
     n = 250 # number of nodes
     tau1 = 2.8 # Power law exponent for degree distribution (>1)
@@ -14,11 +21,15 @@ def generate_LFR(i):
     average_degree = 5 # Average degree of nodes in the network ([0,n])
     min_degree = None # Minimum degree of nodes in the network ([0,n])
     max_degree = None # Maximum degree of nodes in the network
-    min_community = 20 # Minimum size of communities
+    min_community = 50 # Minimum size of communities
     max_community = None # Maximum size of communities
     tol = 1e-07 # Tolerance when comparing floats
-    max_iters = 500 # Maximum number of iterations for the random graph generator
-    seed = 2 # Random seed
+    max_iters = 1000 # Maximum number of iterations for the random graph generator
+    seed = 456 # Random seed
+
+    if i > 1:
+        # Update seed
+        seed = xorshift(seed)
 
     # Set the path and file name
     name = "LFR_" + str(n) + "_" + str(i)
@@ -87,6 +98,6 @@ def generate_LFR(i):
     if RUN_TESTS:
         os.system("python Run_test.py " + name)
 
-for i in range(NUM_SAMPLES):
-    print(i+1)
-    generate_LFR(i+1)
+for i in range(1, NUM_SAMPLES+1):
+    print(i)
+    generate_LFR(i)
