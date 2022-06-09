@@ -1,4 +1,4 @@
-from networkx.generators.community import LFR_benchmark_graph
+import os
 import networkx as nx
 import time
 import os
@@ -20,14 +20,14 @@ def generate_LFR(n):
 
     # Set the path and file name
     name = "LFR_" + str(n)
-    path = "./Graphs/Generated/" + name + "/"
+    path = os.path.join("Graphs", "LFR", name)
     os.makedirs(path, exist_ok = True)
 
     #Start timer
     start = time.time()
 
     # Generate the graph
-    G = LFR_benchmark_graph(n, tau1, tau2, mu, average_degree, min_degree,
+    G = nx.LFR_benchmark_graph(n, tau1, tau2, mu, average_degree, min_degree,
                             max_degree, min_community, max_community,
                             tol, max_iters, seed)
 
@@ -67,19 +67,22 @@ def generate_LFR(n):
         file.write("Time taken: " + str(round(end - start, 2)) + "s")
 
     # Export graph to .txt file
-    nx.write_edgelist(G, path + "LFR_" + str(n) + ".txt", data = False)
+    nx.write_edgelist(G, os.path.join(path, name + ".txt"), data = False)
 
     # Write the community labels to a file
-    with open(path + name + "labels.txt", "w") as file:
+    with open(os.path.join(path, name + "_labels.txt"), "w") as file:
         for v in community_labels:
             file.write(str(v[0]) + " " + str(v[1]) + "\n")
 
     # Write the communities to each line
-    with open(path + name + "cmty.txt", "w") as file:
+    with open(os.path.join(path, name + "_cmty.txt"), "w") as file:
         for community in communities:
             for node in community:
                 file.write(str(node) + " ")
             file.write("\n")
+
+    # Automatically run tests
+    os.system("python3 Run_test.py " + name)
 
 sizes = [250, 1000, 5000, 10000, 50000, 75000, 100000, 500000, 750000, 1000000, 2500000, 5000000]
 

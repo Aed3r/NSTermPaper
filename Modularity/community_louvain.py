@@ -350,9 +350,8 @@ def generate_dendrogram(graph,
     status.init(current_graph, weight, part_init)
     status_list = list()
     __one_level(current_graph, status, weight, resolution, random_state)
-    #new_mod = __modularity(status, resolution)
+    new_mod = __modularity(status, resolution)
     partition = __renumber(status.node2com)
-    new_mod = modularity(partition, current_graph)
     status_list.append(partition)
     mod = new_mod
     current_graph = induced_graph(partition, current_graph, weight)
@@ -360,8 +359,7 @@ def generate_dendrogram(graph,
 
     while True:
         __one_level(current_graph, status, weight, resolution, random_state)
-        #new_mod = __modularity(status, resolution)
-        new_mod = modularity(partition, current_graph)
+        new_mod = __modularity(status, resolution)
         if new_mod - mod < __MIN:
             break
         partition = __renumber(status.node2com)
