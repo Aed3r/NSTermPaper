@@ -1,5 +1,6 @@
 # File containing parameters for the different graph types
 
+
 # Dense network with varying communities
 dense_varying = {
 "tau1" : 2.8, # Power law exponent for degree distribution (>1)
@@ -8,7 +9,7 @@ dense_varying = {
 "average_degree" : 5, # Average degree of nodes in the network ([0,n])
 "min_degree" : None, # Minimum degree of nodes in the network ([0,n])
 "max_degree" : None, # Maximum degree of nodes in the network
-"min_community" : 20, # Minimum size of communities
+"min_community" : 25, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
 "max_iters" : 500 # Maximum number of iterations for the random graph generator
@@ -17,12 +18,12 @@ dense_varying = {
 # Dense network with large communities
 dense_large = {
 "tau1" : 2.8, # Power law exponent for degree distribution (>1)
-"tau2" : 1.5, # Power law exponent for community size distribution (>1)
+"tau2" : 1.2, # Power law exponent for community size distribution (>1)
 "mu" : 0.15, # Fraction of edges to other communities ([0,1])
-"average_degree" : 6, # Average degree of nodes in the network ([0,n])
+"average_degree" : 5, # Average degree of nodes in the network ([0,n])
 "min_degree" : None, # Minimum degree of nodes in the network ([0,n])
 "max_degree" : None, # Maximum degree of nodes in the network
-"min_community" : 50, # Minimum size of communities
+"min_community" : 20, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
 "max_iters" : 500, # Maximum number of iterations for the random graph generator
@@ -74,7 +75,7 @@ sparse_small = {
 # Sparse network with varying communities
 sparse_varying = {
 "tau1" : 2.8, # Power law exponent for degree distribution (>1)
-"tau2" : 1.8, # Power law exponent for community size distribution (>1)
+"tau2" : 1.7, # Power law exponent for community size distribution (>1)
 "mu" : 0.15, # Fraction of edges to other communities ([0,1])
 "average_degree" : 3.5, # Average degree of nodes in the network ([0,n])
 "min_degree" : None, # Minimum degree of nodes in the network ([0,n])
@@ -87,12 +88,12 @@ sparse_varying = {
 
 random_varying = {
 "tau1" : 3.5, # Power law exponent for degree distribution (>1)
-"tau2" : 1.8, # Power law exponent for community size distribution (>1)
-"mu" : 0.15, # Fraction of edges to other communities ([0,1])
+"tau2" : 2, # Power law exponent for community size distribution (>1)
+"mu" : 0.5, # Fraction of edges to other communities ([0,1])
 "average_degree" : 5, # Average degree of nodes in the network ([0,n])
 "min_degree" : None, # Minimum degree of nodes in the network ([0,n])
 "max_degree" : None, # Maximum degree of nodes in the network
-"min_community" : 20, # Minimum size of communities
+"min_community" : 3, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
 "max_iters" : 500 # Maximum number of iterations for the random graph generator

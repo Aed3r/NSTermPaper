@@ -5,8 +5,8 @@ import os
 import Parameters
 
 RUN_TESTS = False
-NUM_SAMPLES = 3
-seed = 2
+NUM_SAMPLES = 1
+SEED = 2
 
 def xorshift(seed):
     x = seed
@@ -21,6 +21,8 @@ def generate_LFR(i, n, name, params, seed):
     for _ in range(i):
         # Update seed
         seed = xorshift(seed)
+
+    params["seed"] = seed
 
     print(i, n, name, seed)
 
@@ -84,9 +86,13 @@ def generate_LFR(i, n, name, params, seed):
 
     print()
 
-sizes = [250]
+sizes = [250,1000,5000]
 
 for name, params in Parameters.params.items():
-    for n in sizes:
+    for size in sizes:
         for i in range(NUM_SAMPLES):
-            generate_LFR(i+1, n, name, params, seed)
+            #sometimes it works, sometimes it does not. Seems very dependent of the seed.
+            try:
+                generate_LFR(i+1, size,  name, params, SEED)
+            except:
+                print("Could not generate", i+1, size,  name, params, SEED)
