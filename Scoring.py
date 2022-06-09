@@ -9,6 +9,7 @@ example3 = normalized_mutual_info_score([1, 1, 0, 0], [1, 2, 3, 4])
 # Takes a file path of a file containing
 # lines with all the nodes in the same community
 # and returns a dictionary storing the partition
+# Use this one for the REAL WORLD graphs!
 def parse_partition(path):
     communities = []
     # Read all the lines of the file, each line is a community
@@ -38,6 +39,7 @@ def parse_partition(path):
 # Takes a file path of a file containing
 # pairs of a node label and which partition it belongs to
 # and returns a dictionary storing the partition
+# Use this one for the LFR graphs
 def read_partition(path):
     items = []
     f = open(path, 'r')

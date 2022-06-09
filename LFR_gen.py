@@ -2,9 +2,10 @@ import os
 import networkx as nx
 import time
 import os
+import Parameters
 
 
-def generate_LFR(n):
+def generate_LFR(name, params, n):
     # n = 50000 # number of nodes
     tau1 = 2.8 # Power law exponent for degree distribution (>1)
     tau2 = 1.8 # Power law exponent for community size distribution (>1)
@@ -19,7 +20,7 @@ def generate_LFR(n):
     seed = 2 # Random seed
 
     # Set the path and file name
-    name = "LFR_" + str(n)
+    name = "LFR_" + name + "_" + str(n)
     path = os.path.join("Graphs", "LFR", name)
     os.makedirs(path, exist_ok = True)
 
@@ -27,9 +28,7 @@ def generate_LFR(n):
     start = time.time()
 
     # Generate the graph
-    G = nx.LFR_benchmark_graph(n, tau1, tau2, mu, average_degree, min_degree,
-                            max_degree, min_community, max_community,
-                            tol, max_iters, seed)
+    G = nx.LFR_benchmark_graph(n, **params)
 
     # Remove self loops
     #G.remove_edges_from(nx.selfloop_edges(G))
@@ -82,11 +81,12 @@ def generate_LFR(n):
             file.write("\n")
 
     # Automatically run tests
-    os.system("python3 Run_test.py " + name)
+    # os.system("python3 Run_test.py " + name)
 
 #sizes = [250, 1000, 5000, 10000, 50000, 75000, 100000, 500000, 750000, 1000000, 2500000, 5000000]
 sizes = [250]
 
-for n in sizes:
-    print(n)
-    generate_LFR(n)
+for name, params in Parameters.params.items():
+    for n in sizes:
+        print(name, n)
+        generate_LFR(name, params, n)
