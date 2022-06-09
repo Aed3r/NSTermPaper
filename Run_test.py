@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 
 import matplotlib.cm as cm
@@ -10,25 +11,27 @@ from infomap import Infomap
 
 import Scoring
 
-PRINT_INFO = True
+PRINT_INFO = False
 DRAW_GRAPH = False
-FILES = [ "LFR_" + str(n) for n in [250,1000,5000,10000,50000,75000,100000]]
+FILE = "LFR_250"
 MEASURE = "ALL" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
 SAVE_RESULTS = True
 RESULTS_FILE = "./Results.csv"
+NUM_SAMPLES = 2
 
-# if len(sys.argv) > 1:
-#     FILE = sys.argv[1]
-#     LOCATION = os.path.join("Graphs", "LFR", FILE)
-#     MEASURE = "ALL"
+if len(sys.argv) > 1:
+    FILE = sys.argv[1]
+    MEASURE = "ALL"
+    NUM_SAMPLES = int(sys.argv[2])
 
-for FILE in FILES:
-    LOCATION = os.path.join("Graphs", "LFR", FILE)
+for i in range(1, NUM_SAMPLES+1):
+    LOCATION = os.path.join("Graphs", "LFR", FILE + "_" + str(i))
+    G = nx.read_edgelist(path = os.path.join(LOCATION, FILE + "_" + str(i) + ".txt"), nodetype = int) # Load the saved graph
 
-    G = nx.read_edgelist(path = os.path.join(LOCATION, FILE + ".txt"), nodetype = int) # Load the saved graph
-
-    SAVEPATH = os.path.join("Results", FILE + "_" + time.strftime("%d_%H-%M-%S"))
+    SAVEPATH = os.path.join("Results", FILE + "_" + str(i) + "_" + time.strftime("%d_%H-%M-%S"))
     os.makedirs(SAVEPATH, exist_ok = True)
+
+    print ("File ", FILE + "_" + str(i) + ":")
 
     # compute the best partition
 
@@ -41,13 +44,13 @@ for FILE in FILES:
         print("Modularity running time:", mod_time, "s")
 
         # Write results to file
-        with open(os.path.join(SAVEPATH, FILE + "_mod.txt"), "a") as f:
+        with open(os.path.join(SAVEPATH, FILE + "_" + str(i) + "_mod.txt"), "a") as f:
             for node, com in mod_partition.items():
                 f.write(str(node) + " " + str(com) + "\n")
 
         # Compare community labels
-        groundTruth = Scoring.read_partition(os.path.join(LOCATION, FILE + "labels.txt"))
-        mod_partition = Scoring.read_partition(os.path.join(SAVEPATH, FILE + "_mod.txt"))
+        groundTruth = Scoring.read_partition(os.path.join(LOCATION, FILE + "_" + str(i) + "_labels.txt"))
+        mod_partition = Scoring.read_partition(os.path.join(SAVEPATH, FILE + "_" + str(i) + "_mod.txt"))
         #partition = Scoring.preprocess_partitions(partition)
 
         mod_res = Scoring.compare_communities(groundTruth, mod_partition)
@@ -69,13 +72,13 @@ for FILE in FILES:
         print(f"Found {im.num_top_modules} modules with codelength: {im.codelength}")
 
         # Write results to file
-        with open(os.path.join(SAVEPATH, FILE + "_map.txt"), "a") as f:
+        with open(os.path.join(SAVEPATH, FILE + "_" + str(i) + "_map.txt"), "a") as f:
             for node in im.tree:
                 if node.is_leaf:
                     f.write(str(node.node_id) + " " + str(node.module_id) + "\n")
 
         # Compare community labels
-        info_partition = Scoring.read_partition(os.path.join(SAVEPATH, FILE + "_map.txt"))
+        info_partition = Scoring.read_partition(os.path.join(SAVEPATH, FILE + "_" + str(i) + "_map.txt"))
         #partition = Scoring.preprocess_partitions(partition)
 
         info_res = Scoring.compare_communities(groundTruth, info_partition)
@@ -83,7 +86,7 @@ for FILE in FILES:
 
     if SAVE_RESULTS and MEASURE == "ALL":
         with open(RESULTS_FILE, "a") as f:
-            f.write(FILE + ", ")
+            f.write(FILE + "_" + str(i) + ", ")
             f.write(time.strftime("%d_%H-%M-%S") + ", ")
             f.write(str(len(set(groundTruth.values()))) + ", " )
             f.write(str(len(set(mod_partition.values()))) + ", " )
