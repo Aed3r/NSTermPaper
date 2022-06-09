@@ -5,14 +5,13 @@ dense_varying = {
 "tau1" : 2.8, # Power law exponent for degree distribution (>1)
 "tau2" : 1.8, # Power law exponent for community size distribution (>1)
 "mu" : 0.15, # Fraction of edges to other communities ([0,1])
-"average_degree" : 6, # Average degree of nodes in the network ([0,n])
+"average_degree" : 5, # Average degree of nodes in the network ([0,n])
 "min_degree" : None, # Minimum degree of nodes in the network ([0,n])
 "max_degree" : None, # Maximum degree of nodes in the network
 "min_community" : 20, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
-"max_iters" : 500, # Maximum number of iterations for the random graph generator
-"seed" : 2 # Random seed
+"max_iters" : 500 # Maximum number of iterations for the random graph generator
 }
 
 # Dense network with large communities
@@ -41,8 +40,7 @@ dense_interconnected = {
 "min_community" : 20, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
-"max_iters" : 500, # Maximum number of iterations for the random graph generator
-"seed" : 2 # Random seed
+"max_iters" : 500 # Maximum number of iterations for the random graph generator
 }
 
 # Dense network with varying communities, with disconnected communities
@@ -56,8 +54,7 @@ dense_disconnected = {
 "min_community" : 20, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
-"max_iters" : 500, # Maximum number of iterations for the random graph generator
-"seed" : 2 # Random seed
+"max_iters" : 500 # Maximum number of iterations for the random graph generator
 }
 
 # Sparse network with small communities
@@ -71,8 +68,7 @@ sparse_small = {
 "min_community" : 20, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
-"max_iters" : 500, # Maximum number of iterations for the random graph generator
-"seed" : 2 # Random seed
+"max_iters" : 500 # Maximum number of iterations for the random graph generator
 }
 
 # Sparse network with varying communities
@@ -86,8 +82,7 @@ sparse_varying = {
 "min_community" : 20, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
-"max_iters" : 500, # Maximum number of iterations for the random graph generator
-"seed" : 2 # Random seed
+"max_iters" : 500 # Maximum number of iterations for the random graph generator
 }
 
 random_varying = {
@@ -100,8 +95,7 @@ random_varying = {
 "min_community" : 20, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
-"max_iters" : 500, # Maximum number of iterations for the random graph generator
-"seed" : 2 # Random seed
+"max_iters" : 500 # Maximum number of iterations for the random graph generator
 }
 
 params = {

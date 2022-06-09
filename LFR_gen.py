@@ -5,7 +5,8 @@ import os
 import Parameters
 
 RUN_TESTS = False
-NUM_SAMPLES = 2
+NUM_SAMPLES = 3
+seed = 2
 
 def xorshift(seed):
     x = seed
@@ -15,11 +16,13 @@ def xorshift(seed):
     return x
 
 
-def generate_LFR(i, n, name, params):
+def generate_LFR(i, n, name, params, seed):
 
-    if i > 1:
+    for _ in range(i):
         # Update seed
         seed = xorshift(seed)
+
+    print(i, n, name, seed)
 
     # Set the path and file name
     name = "LFR_" + name + "_" + str(n) + "_" + str(i)
@@ -53,16 +56,9 @@ def generate_LFR(i, n, name, params):
     # Export paramters and time
     with open(os.path.join(path, name + "_params.txt"), "w") as file:
         file.write("n: " + str(n) + "\n")
-        file.write("tau1: " + str(tau1) + "\n")
-        file.write("tau2: " + str(tau2) + "\n")
-        file.write("mu: " + str(mu) + "\n")
-        file.write("average_degree: " + str(average_degree) + "\n")
-        file.write("min_degree: " + str(min_degree) + "\n")
-        file.write("max_degree: " + str(max_degree) + "\n")
-        file.write("min_community: " + str(min_community) + "\n")
-        file.write("max_community: " + str(max_community) + "\n")
-        file.write("tol: " + str(tol) + "\n")
-        file.write("max_iters: " + str(max_iters) + "\n")
+        for key, value in params.items():
+            if key != "seed":
+                file.write(key + str(value) + "\n")
         file.write("seed: " + str(seed) + "\n")
         file.write("Number of communities: " +  str(len(communities)) + "\n")
         file.write("Time taken: " + str(round(end - start, 2)) + "s")
@@ -86,10 +82,11 @@ def generate_LFR(i, n, name, params):
     if RUN_TESTS:
         os.system("python Run_test.py " + name)
 
+    print()
+
 sizes = [250]
 
 for name, params in Parameters.params.items():
     for n in sizes:
         for i in range(NUM_SAMPLES):
-            print(i+1)
-            generate_LFR(i+1, n, name, params)
+            generate_LFR(i+1, n, name, params, seed)
