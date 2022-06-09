@@ -1,5 +1,4 @@
-#import Community.community as louvain
-#import Community.modularity
+import os
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -12,13 +11,16 @@ from infomap import Infomap
 PRINT_INFO = False
 DRAW_GRAPH = False
 FILE = "LFR_250.txt"
-MEASURE = "MODULARITY" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
+MEASURE = "ALL" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
 
-if len(len(sys.argv)) > 1:
+if len(sys.argv) > 1:
     FILE = sys.argv[1]
     MEASURE = "ALL"
 
 G = nx.read_edgelist(FILE) # Load the saved graph
+
+SAVEPATH = os.path.join("Results", FILE + "_" + time.strftime("%d_%H-%M"))
+os.mkdir(SAVEPATH)
 
 # compute the best partition
 
@@ -30,33 +32,28 @@ if MEASURE == "MODULARITY" or MEASURE == "ALL":
     print("Modularity running time:", round(end - start, 2), "s")
 
     # Write results to file
-    with open(FILE + "_mod_results.txt", "a") as f:
+    with open(os.path.join(SAVEPATH, FILE + "_mod.txt"), "a") as f:
         for node, com in partition.items():
             f.write(str(node) + " " + str(com) + "\n")
 
 if MEASURE == "MAPEQUATION" or MEASURE == "ALL":
+    PRINT_INFO = False
+    DRAW_GRAPH = False
+
     start = time.time()
     
-    im = Infomap("--two-level")
-    for node in G.nodes():
-        im.add_link(node[0], node[1])
+    im = Infomap()
+    for edge in G.edges():
+        im.add_link(int(edge[0]), int(edge[1]))
     im.run()
 
     end = time.time()
     # Running time
     print("MAPEQUATION running time:", round(end - start, 2), "s")
-
-    PRINT_INFO = False
     print(f"Found {im.num_top_modules} modules with codelength: {im.codelength}")
 
-    print("Result")
-    print("\n#node module")
-    for node in im.tree:
-        if node.is_leaf:
-            print(node.node_id, node.module_id)
-
     # Write results to file
-    with open(FILE + "_map_results.txt", "a") as f:
+    with open(os.path.join(SAVEPATH, FILE + "_map.txt"), "a") as f:
         for node in im.tree:
             if node.is_leaf:
                 f.write(str(node.node_id) + " " + str(node.module_id) + "\n")
