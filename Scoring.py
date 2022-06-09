@@ -53,39 +53,26 @@ def read_partition(path):
 
 # takes a dictionary and returns their values in a deterministic order
 # determined by sorting the keys
-def preprocess_partitions(partition):
-    # convert the partition to a list and sort by key
-    sorted_partition = list(partition.items())
-    sorted_partition.sort(key = lambda x : x[0])
-    # only keep the communities
-    communities = [x[1] for x in sorted_partition]
+def preprocess_partitions(ground_truth_partition, found_partition):
+    # find which keys (nodes) are missing and give them each their own community
+    missing_keys = set(ground_truth_partition.keys()) - set(found_partition.keys())
+    missing_items = [(key, key + len(ground_truth_partition)) for key in missing_keys]
+    found_partition.update(missing_items)
 
-    return communities
+    # convert the partition to a list and sort by key
+    sorted_ground_truth_partition = list(ground_truth_partition.items())
+    sorted_ground_truth_partition.sort(key = lambda x : x[0])
+    sorted_found_partition = list(found_partition.items())
+    sorted_found_partition.sort(key = lambda x : x[0])
+    # only keep the communities
+    ground_truth_communities = [x[1] for x in sorted_ground_truth_partition]
+    found_communities = [x[1] for x in sorted_found_partition]
+
+    return ground_truth_communities, found_communities
 
 # takes two dictionaries, where the nodes are keys
 # and the values are the label of the partition they belong to,
 # and returns their normalized mutual information, 0 < NMI < 1
 def compare_communities(ground_truth_partition, found_partition):
-    communities1 = preprocess_partitions(ground_truth_partition)
-    communities2 = preprocess_partitions(found_partition)[:len(communities1)]
-    return normalized_mutual_info_score(communities1, communities2)
-
-examplePartition1 = { 0 : 0
-                    , 1 : 0
-                    , 2 : 0
-                    , 3 : 0
-                    , 4 : 1
-                    , 9 : 1
-                    , 6 : 1
-                    , 7 : 1
-                    }
-
-examplePartition2 = { 0 : 0
-                    , 1 : 1
-                    , 2 : 2
-                    , 3 : 3
-                    , 4 : 4
-                    , 9 : 2
-                    , 6 : 2
-                    , 7 : 2
-                    }
+    ground_truth_communities, found_communities = preprocess_partitions(ground_truth_partition, found_partition)
+    return normalized_mutual_info_score(ground_truth_communities, found_communities)
