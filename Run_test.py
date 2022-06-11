@@ -15,10 +15,10 @@ import Scoring
 
 PRINT_INFO = False
 DRAW_GRAPH = False
-MEASURE = "ALL" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
-SAVE_RESULTS = True
+MEASURE = "MODULARITY" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
+SAVE_RESULTS = False
 VERBOSE = True
-TESTLFR = False # LFR graphs get loaded according to the parameters in Parameters.py
+TESTLFR = True # LFR graphs get loaded according to the parameters in Parameters.py
 
 # To set when testing separate networks
 LOCATION = os.path.join("Graphs", "Real", "EU-email")
