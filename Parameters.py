@@ -1,5 +1,7 @@
-# File containing parameters for the different graph types
+# File containing parameters for the different graph types and general parameters
 
+NUM_SAMPLES = 5
+SIZES = [250,1000,5000,10000,25000,50000,100000,250000,500000,1000000]
 
 # Dense network with varying communities
 dense_varying = {
@@ -27,7 +29,6 @@ dense_large = {
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
 "max_iters" : 500, # Maximum number of iterations for the random graph generator
-"seed" : 1 # Random seed
 }
 
 # Dense network with varying communities, with interconnected communities

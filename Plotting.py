@@ -1,7 +1,10 @@
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import csv
 from ast import literal_eval
+from Parameters import *
+import Parameters
 
 def simplest_type(s):
     try:
@@ -21,7 +24,27 @@ def read_data(path):
 
     return header, data
 
-def plot_found_communities_bar(header, data):
+def get_avg(data):
+    tmp = {}
+    for row in data:
+        handle = row[0][:-2]
+
+        if handle not in tmp:
+            tmp[handle] = []
+
+        tmp[handle].append(row[2:])
+        tmp[handle][-1].insert(0, 0)
+    
+    for item in tmp:
+        tmp[item] = np.mean(tmp[item], axis = 0)
+
+    new_data = []
+    for item in tmp:
+        new_data.append([item] + tmp[item].tolist())
+
+    return new_data
+
+def plot_found_communities_bar(header, data, name):
     # Transpose the data
     data = list(map(list, zip(*data)))
     data_dict = {}
@@ -53,10 +76,11 @@ def plot_found_communities_bar(header, data):
 
     fig.tight_layout()
 
-    plt.show()
+    #plt.show()
+    plt.savefig(os.path.join("Results", "Graphs", name + "_com.png"))
 
 
-def plot_scores_bar(header, data):
+def plot_scores_bar(header, data, name):
     # Transpose the data
     data = list(map(list, zip(*data)))
     data_dict = {}
@@ -85,9 +109,10 @@ def plot_scores_bar(header, data):
 
     fig.tight_layout()
 
-    plt.show()
+    #plt.show()
+    plt.savefig(os.path.join("Results", "Graphs", name + "_scoresBar.png"))
 
-def plot_scores_line(header, data):
+def plot_scores_line(header, data, name):
     # Transpose the data
     data = list(map(list, zip(*data)))
     data_dict = {}
@@ -114,9 +139,10 @@ def plot_scores_line(header, data):
 
     fig.tight_layout()
 
-    plt.show()
+    #plt.show()
+    plt.savefig(os.path.join("Results", "Graphs", name + "_scoresLine.png"))
 
-def plot_times_bar(header, data):
+def plot_times_bar(header, data, name):
     # Transpose the data
     data = list(map(list, zip(*data)))
     data_dict = {}
@@ -145,9 +171,16 @@ def plot_times_bar(header, data):
 
     fig.tight_layout()
 
-    plt.show()
+    #plt.show()
+    plt.savefig(os.path.join("Plots", name + "_times.png"))
 
+for name, _ in Parameters.params.items():
+    (headers, data) = read_data(os.path.join("Results", name, name + ".csv"))
 
-data = read_data("./Results.csv")
+    data = get_avg(data)
 
-plot_scores_line(*data)
+    print(name)
+    plot_found_communities_bar(headers, data, name)
+    plot_scores_bar(headers, data, name)
+    plot_scores_line(headers, data, name)
+    plot_times_bar(headers, data, name)

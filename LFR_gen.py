@@ -3,11 +3,12 @@ import networkx as nx
 import time
 import os
 import Parameters
+from Parameters import *
 
 RUN_TESTS = False
-NUM_SAMPLES = 1
-SEED = 2
-SIZES = [250,1000,5000]
+SEED = 15
+MAXTRIES = 10 # Maximum tries to generate a graph
+RECREATE_FILES = False
 
 def xorshift(seed):
     x = seed
@@ -18,6 +19,14 @@ def xorshift(seed):
 
 
 def generate_LFR(i, n, name, params, seed):
+    # Set the path and file name
+    path = os.path.join("Graphs", "LFR", name)
+    name = "LFR_" + name + "_" + str(n) + "_" + str(i)
+    os.makedirs(path, exist_ok = True)
+
+    # Verify if results file already exists
+    if os.path.isfile(os.path.join(path, name + ".txt")) and not RECREATE_FILES:
+        return
 
     for _ in range(i):
         # Update seed
@@ -27,23 +36,13 @@ def generate_LFR(i, n, name, params, seed):
 
     print(i, n, name, seed)
 
-    # Set the path and file name
-    name = "LFR_" + name + "_" + str(n) + "_" + str(i)
-    path = os.path.join("Graphs", "LFR", name)
-    os.makedirs(path, exist_ok = True)
-
-    #Start timer
-    start = time.time()
+    
 
     # Generate the graph
     G = nx.LFR_benchmark_graph(n, **params)
 
     # Remove self loops
     #G.remove_edges_from(nx.selfloop_edges(G))
-
-    # End timer and display time
-    end = time.time()
-    print("Time taken:" + str(round(end - start, 2)) + "s")
 
     # Return total number of communities in G
     communities = list({frozenset(G.nodes[v]["community"]) for v in G})
@@ -85,15 +84,35 @@ def generate_LFR(i, n, name, params, seed):
     if RUN_TESTS:
         os.system("python Run_test.py " + name)
 
-    print()
 
+#Start timer
+totalTime = time.time()
+totalFails = 0
 
-
-for name, params in Parameters.params.items():
-    for size in SIZES:
+for size in SIZES:
+    for name, params in Parameters.params.items():
         for i in range(NUM_SAMPLES):
-            #sometimes it works, sometimes it does not. Seems very dependent of the seed.
-            try:
-                generate_LFR(i+1, size,  name, params, SEED)
-            except:
+            #sometimes it works, sometimes it does not. Seems very dependent of the seed
+            tries = 0
+            seed = SEED
+
+            #Start timer
+            start = time.time()
+
+            while tries < MAXTRIES:
+                try:
+                    generate_LFR(i+1, size,  name, params, seed)
+                    tries = MAXTRIES+1
+                except:
+                    seed = xorshift(seed)
+                    tries += 1
+
+            # End timer and display time
+            end = time.time()
+            print("Time taken:" + str(round(end - start, 2)) + "s\n")
+            
+            if tries == MAXTRIES:
                 print("Could not generate", i+1, size,  name, params, SEED)
+                totalFails += 1
+
+print("Done. Total time:", str(round(time.time() - totalTime, 2)), "s - Total fails:", totalFails)
