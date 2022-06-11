@@ -1,0 +1,2 @@
+Graph, Time, # true communities, # communities found by modularity, # communities found by MapEquation, Modularity NMI, MapEquation NMI, Modularity time (s), MapEquation time (s)
+LFR_None_None, 11_21-30-26, 2003, 1032, 1066, 0.8125052827169618, 0.8308685046336933, 0.37, 0.08

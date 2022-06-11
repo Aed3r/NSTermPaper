@@ -1,4 +1,4 @@
 .vscode/settings.json
 LFR_*.txt
 Graphs/
-Results/
+Found_communities/

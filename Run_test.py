@@ -21,11 +21,11 @@ VERBOSE = True
 TESTLFR = False # LFR graphs get loaded according to the parameters in Parameters.py
 
 # To set when testing separate networks
-LOCATION = os.path.join("Graphs", "Real", "Youtube")
-FILE = "com-youtube"
-LABELSFILE = "com-youtubecmty.txt"
+LOCATION = os.path.join("Graphs", "Real", "EU-email")
+FILE = "email-Eu-core"
+LABELSFILE = "email-Eu-corelabels.txt"
 
-def run_tests(size, name, params, i):
+def run_tests(size, name, i):
     if TESTLFR:
         location = os.path.join("Graphs", "LFR", name)
         filename = "LFR_" + name + "_" + str(size) + "_" + str(i)
@@ -35,17 +35,25 @@ def run_tests(size, name, params, i):
 
     G = nx.read_edgelist(path = os.path.join(location, filename + ".txt"), nodetype = int) # Load the saved graph
 
+    SAVEPATH = "Results"
+    SAVEPATHCOMS = os.path.join("Found_communities", name)
     if SAVE_RESULTS:
-        SAVEPATH = os.path.join("Results", name)
         os.makedirs(SAVEPATH, exist_ok = True)
-
-    resultsFile = os.path.join(SAVEPATH, name + ".csv")
-    # Verify if results file exists
-    if not os.path.isfile(resultsFile):
-        with open(resultsFile, "a") as f:
-            f.write("Graph, Time, # true communities, # communities found by modularity, # communities found by MapEquation, Modularity NMI, MapEquation NMI, Modularity time (s), MapEquation time (s)\n")
+        os.makedirs(SAVEPATHCOMS, exist_ok = True)
+        resultsFile = os.path.join(SAVEPATH, name + ".csv")
+    
+        # Verify if results file exists
+        if not os.path.isfile(resultsFile):
+            with open(resultsFile, "a") as f:
+                f.write("Graph, Time, # true communities, # communities found by modularity, # communities found by MapEquation, Modularity NMI, MapEquation NMI, Modularity time (s), MapEquation time (s)\n")
 
     print ("File ", filename)
+
+    # Get ground truth community labels
+    if TESTLFR:
+        groundTruth = Scoring.read_partition(os.path.join(location, filename + "_labels.txt"))
+    else:
+        groundTruth = Scoring.parse_partition(os.path.join(location, LABELSFILE))
 
     # compute the best partition
 
@@ -60,7 +68,7 @@ def run_tests(size, name, params, i):
 
         # Write results to file
         if SAVE_RESULTS:
-            with open(os.path.join(SAVEPATH, filename + "_mod.txt"), "a") as f:
+            with open(os.path.join(SAVEPATHCOMS, filename + "_mod.txt"), "a") as f:
                 for node, com in mod_partition.items():
                     f.write(str(node) + " " + str(com) + "\n")
 
@@ -70,10 +78,6 @@ def run_tests(size, name, params, i):
         mod_partition = dict(items)
 
         # Compare community labels
-        if TESTLFR:
-            groundTruth = Scoring.read_partition(os.path.join(location, filename + "_labels.txt"))
-        else:
-            groundTruth = Scoring.parse_partition(os.path.join(location, LABELSFILE))
         #mod_partition = Scoring.read_partition(os.path.join(SAVEPATH, FILE + "_" + str(i) + "_mod.txt"))
 
         mod_res = Scoring.compare_communities(groundTruth, mod_partition)
@@ -98,17 +102,16 @@ def run_tests(size, name, params, i):
 
         # Write results to file
         if SAVE_RESULTS:
-            with open(os.path.join(SAVEPATH, filename + "_map.txt"), "a") as f:
+            with open(os.path.join(SAVEPATHCOMS, filename + "_map.txt"), "a") as f:
                 for node in im.tree:
                     if node.is_leaf:
                         f.write(str(node.node_id) + " " + str(node.module_id) + "\n")
 
-        # Compare community labels
-        if TESTLFR:
-            info_partition = Scoring.read_partition(os.path.join(SAVEPATH, filename + "_map.txt"))
-        else:
-            info_partition = Scoring.parse_partition(os.path.join(location, LABELSFILE))
-        #partition = Scoring.preprocess_partitions(partition)
+        items = []
+        for node in im.tree:
+            if node.is_leaf:
+                items.append((node.node_id, node.module_id))
+        info_partition = dict(items)
 
         info_res = Scoring.compare_communities(groundTruth, info_partition)
         if VERBOSE:
@@ -179,8 +182,8 @@ def run_tests(size, name, params, i):
 
 if TESTLFR:
     for size in SIZES:
-        for name, params in Parameters.params.items():
+        for name, _ in Parameters.params.items():
             for i in range(1, NUM_SAMPLES+1):
-                run_tests(size, name, params, i)
+                run_tests(size, name, i)
 else:
-    run_tests(None, FILE, None, None)
+    run_tests(None, FILE, None)
