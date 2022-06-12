@@ -5,8 +5,8 @@ SIZES = [250,1000,5000,10000,25000,50000,100000,250000,500000,1000000]
 
 # Dense network with varying communities
 dense_varying = {
-"tau1" : 2.8, # Power law exponent for degree distribution (>1)
-"tau2" : 1.8, # Power law exponent for community size distribution (>1)
+"tau1" : 2.8, # Power law exponent for degree distribution ([2,3])
+"tau2" : 1.8, # Power law exponent for community size distribution ([1,2])
 "mu" : 0.15, # Fraction of edges to other communities ([0,1])
 "average_degree" : 5, # Average degree of nodes in the network ([0,n])
 "min_degree" : None, # Minimum degree of nodes in the network ([0,n])

@@ -70,14 +70,15 @@ def plot_found_communities_bar(header, data, name):
     ax.set_xticks(x, labels, rotation = "vertical")
     ax.legend()
 
-    ax.bar_label(rects1, padding=3)
-    ax.bar_label(rects2, padding=3)
-    ax.bar_label(rects3, padding=3)
+    # Bar labels overlap unfortunately
+    # ax.bar_label(rects1, padding=3)
+    # ax.bar_label(rects2, padding=3)
+    # ax.bar_label(rects3, padding=3)
 
     fig.tight_layout()
 
     #plt.show()
-    plt.savefig(os.path.join("Results", "Graphs", name + "_com.png"))
+    plt.savefig(os.path.join("Plots", name + "_com.png"))
 
 
 def plot_scores_bar(header, data, name):
@@ -104,13 +105,14 @@ def plot_scores_bar(header, data, name):
     ax.set_xticks(x, labels, rotation = "vertical")
     ax.legend()
 
-    ax.bar_label(rects1, padding=3)
-    ax.bar_label(rects2, padding=3)
+    # Bar labels overlap unfortunately
+    #ax.bar_label(rects1, padding=3)
+    #ax.bar_label(rects2, padding=3)
 
     fig.tight_layout()
 
     #plt.show()
-    plt.savefig(os.path.join("Results", "Graphs", name + "_scoresBar.png"))
+    plt.savefig(os.path.join("Plots", name + "_scoresBar.png"))
 
 def plot_scores_line(header, data, name):
     # Transpose the data
@@ -140,7 +142,7 @@ def plot_scores_line(header, data, name):
     fig.tight_layout()
 
     #plt.show()
-    plt.savefig(os.path.join("Results", "Graphs", name + "_scoresLine.png"))
+    plt.savefig(os.path.join("Plots", name + "_scoresLine.png"))
 
 def plot_times_bar(header, data, name):
     # Transpose the data
@@ -166,16 +168,20 @@ def plot_times_bar(header, data, name):
     ax.set_xticks(x, labels, rotation = "vertical")
     ax.legend()
 
-    ax.bar_label(rects1, padding=3)
-    ax.bar_label(rects2, padding=3)
+    # Bar labels overlap unfortunately
+    #ax.bar_label(rects1, padding=3)
+    #ax.bar_label(rects2, padding=3)
 
     fig.tight_layout()
 
     #plt.show()
     plt.savefig(os.path.join("Plots", name + "_times.png"))
 
+# Make sure destination folder exists
+os.makedirs("Plots", exist_ok = True)
+
 for name, _ in Parameters.params.items():
-    (headers, data) = read_data(os.path.join("Results", name, name + ".csv"))
+    (headers, data) = read_data(os.path.join("Results", name + ".csv"))
 
     data = get_avg(data)
 

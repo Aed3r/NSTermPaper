@@ -15,15 +15,15 @@ import Scoring
 
 PRINT_INFO = False
 DRAW_GRAPH = False
-MEASURE = "MODULARITY" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
-SAVE_RESULTS = False
+MEASURE = "ALL" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
+SAVE_RESULTS = True
 VERBOSE = True
-TESTLFR = True # LFR graphs get loaded according to the parameters in Parameters.py
+TESTLFR = False # LFR graphs get loaded according to the parameters in Parameters.py
 
 # To set when testing separate networks
-LOCATION = os.path.join("Graphs", "Real", "EU-email")
-FILE = "email-Eu-core"
-LABELSFILE = "email-Eu-corelabels.txt"
+LOCATION = os.path.join("Graphs", "Real", "Youtube")
+FILE = "com-youtube"
+LABELSFILE = "com-youtubecmty.txt"
 
 def run_tests(size, name, i):
     if TESTLFR:
