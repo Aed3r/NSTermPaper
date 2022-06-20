@@ -2,3 +2,4 @@
 LFR_*.txt
 Graphs/
 Found_communities/
+*.pyc

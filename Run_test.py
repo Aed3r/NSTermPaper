@@ -13,19 +13,19 @@ from Parameters import *
 import Parameters
 import Scoring
 
-PRINT_INFO = False
-DRAW_GRAPH = False
+PRINT_INFO = False # Print detailed information about the generated partition
+DRAW_GRAPH = False # Draw a colored graph to show the generated partition
 MEASURE = "ALL" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
-SAVE_RESULTS = True
-VERBOSE = True
-TESTLFR = False # LFR graphs get loaded according to the parameters in Parameters.py
+SAVE_RESULTS = True # Save the partitioning results in ./Results/ and ./Found_communities/
+VERBOSE = True # Print progress information 
+TESTLFR = False # Set to True to automatically load all generated LFR graphs according to the parameters set in Parameters.py
 
-# To set when testing separate networks
-LOCATION = os.path.join("Graphs", "Real", "Youtube")
-FILE = "com-youtube"
-LABELSFILE = "com-youtubecmty.txt"
+# To set when testing non-LFR networks (with TESTLFR set to False)
+LOCATION = os.path.join("Graphs", "Real", "Youtube") # Folder containing the network to be tested
+FILE = "com-youtube" # Name of the file containing the network to be tested (without the .txt extension)
+LABELSFILE = "com-youtubecmty.txt" # Name of the file containing the community labels
 
-def run_tests(size, name, i):
+def run_test(size, name, i):
     if TESTLFR:
         location = os.path.join("Graphs", "LFR", name)
         filename = "LFR_" + name + "_" + str(size) + "_" + str(i)
@@ -180,10 +180,25 @@ def run_tests(size, name, i):
         nx.draw_networkx_edges(G, pos, alpha=0.5)
         plt.show()
 
-if TESTLFR:
-    for size in SIZES:
-        for name, _ in Parameters.params.items():
-            for i in range(1, NUM_SAMPLES+1):
-                run_tests(size, name, i)
-else:
-    run_tests(None, FILE, None)
+# Used by LFR_gen if tyhe correct parameter is set
+def run_auto_test(file, location, labelsfile):
+    global FILE, LOCATION, LABELSFILE, TESTLFR
+    FILE = file
+    LOCATION = location
+    LABELSFILE = labelsfile
+    TESTLFR = False
+    run_test(None, FILE, None)
+
+if __name__ == "__main__":
+    if TESTLFR:
+        for size in SIZES:
+            for name, _ in Parameters.params.items():
+                for i in range(1, NUM_SAMPLES+1):
+                    try:
+                        run_test(size, name, i)
+                    except Exception as e:
+                        print("Error testing file: ", name)
+                        print(e)
+                        continue
+    else:
+        run_test(None, FILE, None)
