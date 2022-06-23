@@ -66,9 +66,11 @@ def plot_found_communities_bar(header, data, name):
     rects3 = ax.bar(x + width, info_communities, width, label='MapEquation')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Amount of communities')
+    ax.set_ylabel('Amount of communities (log scale)')
     ax.set_xticks(x, labels, rotation = "vertical")
     ax.legend()
+
+    plt.yscale("log")
 
     # Bar labels overlap unfortunately
     # ax.bar_label(rects1, padding=3)
@@ -138,6 +140,8 @@ def plot_scores_line(header, data, name):
     ax.set_ylabel('Normalized mutual information score')
     ax.set_xticks(x, labels, rotation = "vertical")
     ax.legend()
+
+    plt.ylim(0.25, 1)
 
     fig.tight_layout()
 
