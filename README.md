@@ -11,8 +11,9 @@ The following python packages are required to run the experiments:
  - sklearn
  - scipy
  - infomap
+ - numpy
 
-They can all be installed using pip: `pip install <package-name>`
+They can all be installed in one command using pip: `pip install -r requirements.txt`
 
 To generate a new LFR benchmark, simply modify the parameters in `Parameters.py` and `LFR_gen.py` and run the latter. The resulting files should appear in `Graphs/LFR/...`.
 

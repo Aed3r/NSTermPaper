@@ -17,8 +17,9 @@ PRINT_INFO = False # Print detailed information about the generated partition
 DRAW_GRAPH = False # Draw a colored graph to show the generated partition
 MEASURE = "ALL" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
 SAVE_RESULTS = True # Save the partitioning results in ./Results/ and ./Found_communities/
-VERBOSE = True # Print progress information 
-TESTLFR = False # Set to True to automatically load all generated LFR graphs according to the parameters set in Parameters.py
+VERBOSE = False # Print progress information 
+TESTLFR = True # Set to True to automatically load all generated LFR graphs according to the parameters set in Parameters.py
+RERUN_TESTS = False # Set to True to rerun tests that were already calculated for a specific set of parameters
 
 # To set when testing non-LFR networks (with TESTLFR set to False)
 LOCATION = os.path.join("Graphs", "Real", "Youtube") # Folder containing the network to be tested
@@ -47,8 +48,6 @@ def run_test(size, name, i):
             with open(resultsFile, "a") as f:
                 f.write("Graph, Time, # true communities, # communities found by modularity, # communities found by MapEquation, Modularity NMI, MapEquation NMI, Modularity time (s), MapEquation time (s)\n")
 
-    print ("File ", filename)
-
     # Get ground truth community labels
     if TESTLFR:
         groundTruth = Scoring.read_partition(os.path.join(location, filename + "_labels.txt"))
@@ -56,68 +55,82 @@ def run_test(size, name, i):
         groundTruth = Scoring.parse_partition(os.path.join(location, LABELSFILE))
 
     # compute the best partition
-
+    ran = 0
     if MEASURE == "MODULARITY" or MEASURE == "ALL":
-        start = time.time()
-        mod_partition = modularity.best_partition(G)
-        end = time.time()
-        # Running time
-        mod_time = round(end - start, 2)
-        if VERBOSE:
-            print("Modularity running time:", mod_time, "s")
+        comSaveFile = os.path.join(SAVEPATHCOMS, filename + "_mod.txt")
 
-        # Write results to file
-        if SAVE_RESULTS:
-            with open(os.path.join(SAVEPATHCOMS, filename + "_mod.txt"), "a") as f:
-                for node, com in mod_partition.items():
-                    f.write(str(node) + " " + str(com) + "\n")
+        # Verify whether or not modularity was already computed for this set of parameters
+        if RERUN_TESTS or (not RERUN_TESTS and not os.path.isfile(os.path.join(SAVEPATHCOMS, comSaveFile))):
+            ran += 1
+            print ("File", filename, "modularity")
 
-        items = []
-        for node, com in mod_partition.items():
-            items.append((node, com))
-        mod_partition = dict(items)
+            start = time.time()
+            mod_partition = modularity.best_partition(G)
+            end = time.time()
+            # Running time
+            mod_time = round(end - start, 2)
+            if VERBOSE:
+                print("Modularity running time:", mod_time, "s")
 
-        # Compare community labels
-        #mod_partition = Scoring.read_partition(os.path.join(SAVEPATH, FILE + "_" + str(i) + "_mod.txt"))
+            # Write results to file
+            if SAVE_RESULTS:
+                with open(comSaveFile, "a") as f:
+                    for node, com in mod_partition.items():
+                        f.write(str(node) + " " + str(com) + "\n")
 
-        mod_res = Scoring.compare_communities(groundTruth, mod_partition)
-        if VERBOSE:
-            print("Modularity NMI: ", mod_res)
+            items = []
+            for node, com in mod_partition.items():
+                items.append((node, com))
+            mod_partition = dict(items)
+
+            # Compare community labels
+            #mod_partition = Scoring.read_partition(os.path.join(SAVEPATH, FILE + "_" + str(i) + "_mod.txt"))
+
+            mod_res = Scoring.compare_communities(groundTruth, mod_partition)
+            if VERBOSE:
+                print("Modularity NMI: ", mod_res)
 
 
     if MEASURE == "MAPEQUATION" or MEASURE == "ALL":
-        start = time.time()
+        comSaveFile = os.path.join(SAVEPATHCOMS, filename + "_map.txt")
 
-        im = Infomap("--silent -2")
-        for edge in G.edges():
-            im.add_link(int(edge[0]), int(edge[1]))
-        im.run()
+        # Verify whether or not modularity was already computed for this set of parameters
+        if RERUN_TESTS or (not RERUN_TESTS and not os.path.isfile(os.path.join(SAVEPATHCOMS, comSaveFile))):
+            ran += 1
+            print ("File", filename, "infomap")
 
-        end = time.time()
-        # Running time
-        info_time = round(end - start, 2)
-        if VERBOSE:
-            print("MAPEQUATION running time:", info_time, "s")
-            print(f"Found {im.num_top_modules} modules with codelength: {im.codelength}")
+            start = time.time()
 
-        # Write results to file
-        if SAVE_RESULTS:
-            with open(os.path.join(SAVEPATHCOMS, filename + "_map.txt"), "a") as f:
-                for node in im.tree:
-                    if node.is_leaf:
-                        f.write(str(node.node_id) + " " + str(node.module_id) + "\n")
+            im = Infomap("--silent -2")
+            for edge in G.edges():
+                im.add_link(int(edge[0]), int(edge[1]))
+            im.run()
 
-        items = []
-        for node in im.tree:
-            if node.is_leaf:
-                items.append((node.node_id, node.module_id))
-        info_partition = dict(items)
+            end = time.time()
+            # Running time
+            info_time = round(end - start, 2)
+            if VERBOSE:
+                print("MAPEQUATION running time:", info_time, "s")
+                print(f"Found {im.num_top_modules} modules with codelength: {im.codelength}")
 
-        info_res = Scoring.compare_communities(groundTruth, info_partition)
-        if VERBOSE:
-            print("MapEquation NMI: ", info_res)
+            # Write results to file
+            if SAVE_RESULTS:
+                with open(comSaveFile, "a") as f:
+                    for node in im.tree:
+                        if node.is_leaf:
+                            f.write(str(node.node_id) + " " + str(node.module_id) + "\n")
 
-    if SAVE_RESULTS and MEASURE == "ALL":
+            items = []
+            for node in im.tree:
+                if node.is_leaf:
+                    items.append((node.node_id, node.module_id))
+            info_partition = dict(items)
+
+            info_res = Scoring.compare_communities(groundTruth, info_partition)
+            if VERBOSE:
+                print("MapEquation NMI: ", info_res)
+
+    if SAVE_RESULTS and MEASURE == "ALL" and ran == 2:
         with open(resultsFile, "a") as f:
             f.write("LFR_" + str(size) + "_" + str(i) + ", ")
             f.write(time.strftime("%d_%H-%M-%S") + ", ")

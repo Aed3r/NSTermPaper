@@ -6,7 +6,7 @@ from Parameters import *
 import Display_graph
 import Run_test
 
-SEED = 15 # Root seed used for RNG. Modify if running multiple times with the same set of parameters.
+SEED = -2 # Root seed used for RNG. Modify if running multiple times with the same set of parameters.
 MAXTRIES = 10 # Maximum tries to generate a graph
 RECREATE_FILES = False # Whether or not to overwrite existing networks with the exact same parameters
 RUN_TESTS = False # Set to True to automatically run 'Run_test.py' after the graph is generated
@@ -22,23 +22,20 @@ def xorshift(seed):
 
 
 # Generate one network with the specified parameters
-def generate_LFR(i, n, name, params, seed):
+# Returns True if it ran and False if not (if RECREATE_FILES is True the file already existed)
+def generate_LFR(runNum, n, name, params, seed):
     # Set the path and file name
     path = os.path.join("Graphs", "LFR", name)
-    name = "LFR_" + name + "_" + str(n) + "_" + str(i)
+    name = "LFR_" + name + "_" + str(n) + "_" + str(runNum)
     os.makedirs(path, exist_ok = True)
 
     # Verify if results file already exists
     if os.path.isfile(os.path.join(path, name + ".txt")) and not RECREATE_FILES:
-        return
-
-    for _ in range(i):
-        # Update seed
-        seed = xorshift(seed)
+        return False
 
     params["seed"] = seed
 
-    print(i, n, name, seed)
+    print(runNum, n, name, seed)
 
     start = time.time()
 
@@ -95,6 +92,8 @@ def generate_LFR(i, n, name, params, seed):
     if RUN_TESTS:
         Run_test.run_test(name, path, labelsFile)
 
+    return True
+
 
 #Start timer
 totalTime = time.time()
@@ -102,27 +101,35 @@ totalFails = 0
 lastError = None
 
 for i in range(NUM_SAMPLES):
+    genSeed = (i+1) * SEED
     for size in SIZES:
         for name, params in Parameters.params.items():
             #sometimes it works, sometimes it does not. Seems very dependent of the seed
             tries = 0
-            seed = SEED
+            seed = genSeed
+            ran = False
 
             #Start timer
             start = time.time()
 
             while tries < MAXTRIES:
                 try:
-                    generate_LFR(i+1, size,  name, params, seed)
+                    ran = generate_LFR(i+1, size,  name, params, seed)
                     tries = MAXTRIES+1
-                except:
+                except Exception as e:
                     seed = xorshift(seed)
                     tries += 1
-                    lastError = "test"
+                    lastError = e
+                    continue
+                except KeyboardInterrupt:
+                    seed = xorshift(seed)
+                    tries += 1
+                    continue
 
             # End timer and display time
-            end = time.time()
-            print("Time taken:" + str(round(end - start, 2)) + "s\n")
+            if ran:
+                end = time.time()
+                print("Time taken:" + str(round(end - start, 2)) + "s\n")
             
             if tries == MAXTRIES:
                 print("Could not generate", i+1, size,  name, params)

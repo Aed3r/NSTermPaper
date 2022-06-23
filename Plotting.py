@@ -181,7 +181,10 @@ def plot_times_bar(header, data, name):
 os.makedirs("Plots", exist_ok = True)
 
 for name, _ in Parameters.params.items():
-    (headers, data) = read_data(os.path.join("Results", name + ".csv"))
+    try:
+        (headers, data) = read_data(os.path.join("Results", name + ".csv"))
+    except:
+        print("Error: '" + name + ".csv' is missing")
 
     data = get_avg(data)
 
