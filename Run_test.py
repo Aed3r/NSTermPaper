@@ -27,14 +27,13 @@ FILE = "com-youtube" # Name of the file containing the network to be tested (wit
 LABELSFILE = "com-youtubecmty.txt" # Name of the file containing the community labels
 
 def run_test(size, name, i):
+    # Initialize save locations and files
     if TESTLFR:
         location = os.path.join("Graphs", "LFR", name)
         filename = "LFR_" + name + "_" + str(size) + "_" + str(i)
     else:
         location = LOCATION
         filename = FILE
-
-    G = nx.read_edgelist(path = os.path.join(location, filename + ".txt"), nodetype = int) # Load the saved graph
 
     SAVEPATH = "Results"
     SAVEPATHCOMS = os.path.join("Found_communities", name)
@@ -48,6 +47,16 @@ def run_test(size, name, i):
             with open(resultsFile, "a") as f:
                 f.write("Graph, Time, # true communities, # communities found by modularity, # communities found by MapEquation, Modularity NMI, MapEquation NMI, Modularity time (s), MapEquation time (s)\n")
 
+    comSaveFileMod = os.path.join(SAVEPATHCOMS, filename + "_mod.txt")
+    comSaveFileMap = os.path.join(SAVEPATHCOMS, filename + "_map.txt")
+
+    # Verify if any measure need to be run
+    if not RERUN_TESTS and os.path.isfile(comSaveFileMod) and os.path.isfile(comSaveFileMap):
+        return
+
+    # Load the saved graph
+    G = nx.read_edgelist(path = os.path.join(location, filename + ".txt"), nodetype = int)
+
     # Get ground truth community labels
     if TESTLFR:
         groundTruth = Scoring.read_partition(os.path.join(location, filename + "_labels.txt"))
@@ -57,10 +66,8 @@ def run_test(size, name, i):
     # compute the best partition
     ran = 0
     if MEASURE == "MODULARITY" or MEASURE == "ALL":
-        comSaveFile = os.path.join(SAVEPATHCOMS, filename + "_mod.txt")
-
         # Verify whether or not modularity was already computed for this set of parameters
-        if RERUN_TESTS or (not RERUN_TESTS and not os.path.isfile(os.path.join(SAVEPATHCOMS, comSaveFile))):
+        if RERUN_TESTS or not os.path.isfile(comSaveFileMod):
             ran += 1
             print ("File", filename, "modularity")
 
@@ -74,7 +81,7 @@ def run_test(size, name, i):
 
             # Write results to file
             if SAVE_RESULTS:
-                with open(comSaveFile, "a") as f:
+                with open(comSaveFileMod, "a") as f:
                     for node, com in mod_partition.items():
                         f.write(str(node) + " " + str(com) + "\n")
 
@@ -92,10 +99,8 @@ def run_test(size, name, i):
 
 
     if MEASURE == "MAPEQUATION" or MEASURE == "ALL":
-        comSaveFile = os.path.join(SAVEPATHCOMS, filename + "_map.txt")
-
         # Verify whether or not modularity was already computed for this set of parameters
-        if RERUN_TESTS or (not RERUN_TESTS and not os.path.isfile(os.path.join(SAVEPATHCOMS, comSaveFile))):
+        if RERUN_TESTS or not os.path.isfile(comSaveFileMap):
             ran += 1
             print ("File", filename, "infomap")
 
@@ -115,7 +120,7 @@ def run_test(size, name, i):
 
             # Write results to file
             if SAVE_RESULTS:
-                with open(comSaveFile, "a") as f:
+                with open(comSaveFileMap, "a") as f:
                     for node in im.tree:
                         if node.is_leaf:
                             f.write(str(node.node_id) + " " + str(node.module_id) + "\n")
@@ -209,6 +214,9 @@ if __name__ == "__main__":
                 for i in range(1, NUM_SAMPLES+1):
                     try:
                         run_test(size, name, i)
+                    except KeyboardInterrupt:
+                        print("Skipping file: ", name)
+                        continue
                     except Exception as e:
                         print("Error testing file: ", name)
                         print(e)

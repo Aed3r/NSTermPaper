@@ -54,15 +54,15 @@ dense_disconnected = {
 "min_degree" : None, # Minimum degree of nodes in the network ([0,n])
 "max_degree" : None, # Maximum degree of nodes in the network
 "min_community" : 25, # Minimum size of communities
-"max_community" : None, # Maximum size of communitiesmax_iters" : 100
+"max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
 "max_iters" : 100 # Maximum number of iterations for the random graph generator
 }
 
 # Sparse network with small communities
 sparse_small = {
-"tau1" : 2.7, # Power law exponent for degree distribution (>1)
-"tau2" : 1.3, # Power law exponent for community size distribution (>1)
+"tau1" : 2.1, # Power law exponent for degree distribution (>1)
+"tau2" : 1.1, # Power law exponent for community size distribution (>1)
 "mu" : 0.15, # Fraction of edges to other communities ([0,1])
 "average_degree" : 6, # Average degree of nodes in the network ([0,n])
 "min_degree" : None, # Minimum degree of nodes in the network ([0,n])
@@ -75,13 +75,13 @@ sparse_small = {
 
 # Sparse network with varying communities
 sparse_varying = {
-"tau1" : 2.5, # Power law exponent for degree distribution (>1)
-"tau2" : 1.8, # Power law exponent for community size distribution (>1)
+"tau1" : 2.1, # Power law exponent for degree distribution (>1)
+"tau2" : 2, # Power law exponent for community size distribution (>1)
 "mu" : 0.15, # Fraction of edges to other communities ([0,1])
 "average_degree" : 6, # Average degree of nodes in the network ([0,n])
 "min_degree" : None, # Minimum degree of nodes in the network ([0,n])
 "max_degree" : None, # Maximum degree of nodes in the network
-"min_community" : 20, # Minimum size of communities
+"min_community" : 15, # Minimum size of communities
 "max_community" : None, # Maximum size of communities
 "tol" : 1e-07, # Tolerance when comparing floats
 "max_iters" : 100 # Maximum number of iterations for the random graph generator

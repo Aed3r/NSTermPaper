@@ -26,5 +26,7 @@ The script `Plotting.py` can be used to plot the results from the generated CSV 
 The memory_profiler tool mprof.py can be used to measure memory usage: `python mprof.py run <file>.py`
 And to plot the generated data: `python mprof.py plot`
 
+`Analysis.py` contains code used to generate quantitative analysis of the results.
+
 The functions used to analyze the graphs from snap can be directly downloaded and unpacked into a directory of choice.
 NB. Some graphs have overlapping communities.
