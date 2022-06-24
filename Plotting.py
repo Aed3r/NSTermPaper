@@ -24,6 +24,7 @@ def read_data(path):
 
     return header, data
 
+# Averages all network instances together
 def get_avg(data):
     tmp = {}
     for row in data:

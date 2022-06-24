@@ -7,7 +7,7 @@ import Display_graph
 import Run_test
 
 SEED = 2 # Root seed used for RNG. Modify if running multiple times with the same set of parameters.
-MAXTRIES = 10 # Maximum tries to generate a graph
+MAXTRIES = 10 # Maximum tries to generate a graph using different seeds
 RECREATE_FILES = False # Whether or not to overwrite existing networks with the exact same parameters
 RUN_TESTS = False # Set to True to automatically run 'Run_test.py' after the graph is generated
 DISPLAY_GRAPH = False # Set to True to automatically run 'Display_graph.py' after the graph is generated

@@ -13,18 +13,18 @@ from Parameters import *
 import Parameters
 import Scoring
 
-PRINT_INFO = False # Print detailed information about the generated partition
+PRINT_INFO = True # Print detailed information about the generated partition
 DRAW_GRAPH = False # Draw a colored graph to show the generated partition
 MEASURE = "ALL" # "MODULARITY" / "MAPEQUATION" / "SIGCLUST" / "ALL"
 SAVE_RESULTS = True # Save the partitioning results in ./Results/ and ./Found_communities/
-VERBOSE = False # Print progress information 
-TESTLFR = True # Set to True to automatically load all generated LFR graphs according to the parameters set in Parameters.py
+VERBOSE = False # Print detailed progress information 
+TESTLFR = False # Set to True to automatically load all generated LFR graphs according to the parameters set in Parameters.py
 RERUN_TESTS = False # Set to True to rerun tests that were already calculated for a specific set of parameters
 
 # To set when testing non-LFR networks (with TESTLFR set to False)
-LOCATION = os.path.join("Graphs", "Real", "Youtube") # Folder containing the network to be tested
-FILE = "com-youtube" # Name of the file containing the network to be tested (without the .txt extension)
-LABELSFILE = "com-youtubecmty.txt" # Name of the file containing the community labels
+LOCATION = os.path.join("Graphs", "Real", "Amazon") # Folder containing the network to be tested
+FILE = "com-amazon" # Name of the file containing the network to be tested (without the .txt extension)
+LABELSFILE = "com-amazoncmty.txt" # Name of the file containing the ground truth community labels
 
 def run_test(size, name, i):
     # Initialize save locations and files

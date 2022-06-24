@@ -122,8 +122,8 @@ for name, _ in Parameters.params.items():
     
     data[name] = fileData
 
-#total_avg_running_time(data)
-#total_avg_community_count_difference(data)
+total_avg_running_time(data)
+total_avg_community_count_difference(data)
 total_avg_nmi_difference(data)
-#nmi_varying_vs_not(data)
-#nmi_interconnected_vs_not(data)
+nmi_varying_vs_not(data)
+nmi_interconnected_vs_not(data)
